@@ -1,0 +1,14 @@
+{
+	"name": "anonymous-request",
+	"version": "1.0.0",
+	"description": "Sends anonymous HTTP request via Tor",
+	"main": "index.js",
+	"keywords": [
+		"tor",
+		"http-client",
+		"anonymous",
+		"http"
+	],
+	"author": "Kirlovon",
+	"license": "MIT"
+}
