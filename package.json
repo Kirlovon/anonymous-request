@@ -3,6 +3,11 @@
 	"version": "1.0.0",
 	"description": "Sends anonymous HTTP request via Tor",
 	"main": "index.js",
+	"files": [
+		"index.js",
+		"mini-tor.exe",
+		"LICENSE"
+	],
 	"keywords": [
 		"tor",
 		"http-client",
@@ -10,5 +15,8 @@
 		"http"
 	],
 	"author": "Kirlovon",
-	"license": "MIT"
+	"license": "MIT",
+	"devDependencies": {
+		"eslint": "^5.16.0"
+	}
 }
