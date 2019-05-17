@@ -2,8 +2,9 @@
  * Anonymous-Request
  * @param url URL to send GET request.
  * @param config Request config.
+ * @returns Response body.
  */
-declare function AnonymousRequest(url: string, config: Config): Promise<string>
+declare function AnonymousRequest(url: string, config?: Config): Promise<string>
 
 /** Request config. */
 declare interface Config {
