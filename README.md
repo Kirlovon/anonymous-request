@@ -1,5 +1,5 @@
 # Anonymous-Request
-This library allows you to send anonymous GET request via Tor routers. Each request passes through different Tor routers, and takes about 3 seconds.
+This library allows you to send anonymous GET request via Tor. Each request passes through different Tor routers, and takes about 3 seconds.
 
 Powered by awesome **[mini-tor](https://github.com/wbenny/mini-tor)**, made by **[wbenny](https://github.com/wbenny)**.
 
