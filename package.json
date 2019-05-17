@@ -1,10 +1,12 @@
 {
 	"name": "anonymous-request",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Sends anonymous HTTP request via Tor",
 	"main": "index.js",
+	"types": "index.d.ts",
 	"files": [
 		"index.js",
+		"index.d.ts",
 		"mini-tor.exe",
 		"LICENSE"
 	],

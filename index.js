@@ -1,10 +1,11 @@
+const path = require("path");
 const util = require('util');
 const childProcess = require('child_process');
 const execFile = util.promisify(childProcess.execFile);
 
 /**
- * @typedef config
- * @property {number} [timeout=5000] Request timeout.
+ * @typedef Config Request config.
+ * @property {number} [timeout=10000] Request timeout.
  * @property {number} [attempts=3] Number of request attempts.
  * @property {string} [encoding="utf8"] Response encoding.
  * @property {boolean} [log=false] Log details of the request.
@@ -17,7 +18,7 @@ const execFile = util.promisify(childProcess.execFile);
  *
  * @async
  * @param {string} url URL to send GET request.
- * @param {config} [config={}] Request config.
+ * @param {Config} [config={}] Request config.
  * @returns {Promise<string>} Response body.
  */
 async function AnonymousRequest(url, config = {}) {
@@ -26,10 +27,13 @@ async function AnonymousRequest(url, config = {}) {
 	if (process.platform !== 'win32') throw new Error('Your operating system is not supported');
 	if (typeof url !== 'string') throw new Error('URL must be a string');
 	if (typeof config !== 'object') throw new Error('Config must be an object');
-	if (typeof config.timeout !== 'number') config.timeout = 5000;
+	if (typeof config.timeout !== 'number') config.timeout = 10000;
 	if (typeof config.attempts !== 'number') config.attempts = 3;
 	if (typeof config.encoding !== 'string') config.encoding = 'utf8';
 	if (typeof config.log !== 'boolean') config.log = false;
+
+	// Get path to the "mini-tor.exe"
+	const miniTor = path.join(__dirname, '/mini-tor.exe');
 
 	let output;
 
@@ -37,18 +41,33 @@ async function AnonymousRequest(url, config = {}) {
 	for (let attempt = 0; attempt < config.attempts; attempt++) {
 		try {
 
-			output = await execFile('mini-tor.exe', [url], {
+			output = await execFile(miniTor, [url], {
 				timeout: config.timeout,
 				encoding: config.encoding,
 				windowsHide: true,
 			});
 
-			if (typeof output === 'object') break;
+			if (typeof output === 'object') {
+				if (config.log) {
+					const date = new Date();
+					const color = '\x1b[32m%s\x1b[0m';
+					const time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ":" + date.getMilliseconds();
+					console.warn(color, `[${time}] Attempt request to "${url}" number ${attempt + 1}/${config.attempts} succeed!`);
+				}
+				break;
+			}
 
 		} catch (error) {
-			if (config.log) console.error('\x1b[33m%s\x1b[0m', `Attempt number ${attempt + 1} failed!`);
+			if (config.log) {
+				const date = new Date();
+				const color = `\x1b[${attempt < (config.attempts - 1) ? 33 : 31}m%s\x1b[0m`;
+				const time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ":" + date.getMilliseconds();
+				console.warn(color, `[${time}] Attempt request to "${url}" number ${attempt + 1}/${config.attempts} failed!`);
+			}
 		}
 	}
+
+	if (typeof output !== 'object') throw new Error('Could not get an response from the server');
 
 	// Remove spaces from error and response
 	const error = output.stderr.trim();
