@@ -15,7 +15,7 @@ npm install Kirlovon/Anonymous-Request --save
 ## Example
 
 ```javascript
-const Request = ('anonymous-request');
+const Request = require('anonymous-request');
 
 Request('api.ipify.org', { 
     timeout: 5000,
