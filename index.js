@@ -6,7 +6,7 @@ const execFile = util.promisify(childProcess.execFile);
 /**
  * @typedef Config Request config.
  * @property {number} [timeout=10000] Request timeout.
- * @property {number} [attempts=3] Number of request attempts.
+ * @property {number} [attempts=5] Number of request attempts.
  * @property {string} [encoding="utf8"] Response encoding.
  * @property {boolean} [log=false] Log details of the request.
  */
@@ -28,7 +28,7 @@ async function AnonymousRequest(url, config = {}) {
 	if (typeof url !== 'string') throw new Error('URL must be a string');
 	if (typeof config !== 'object') throw new Error('Config must be an object');
 	if (typeof config.timeout !== 'number') config.timeout = 10000;
-	if (typeof config.attempts !== 'number') config.attempts = 3;
+	if (typeof config.attempts !== 'number') config.attempts = 5;
 	if (typeof config.encoding !== 'string') config.encoding = 'utf8';
 	if (typeof config.log !== 'boolean') config.log = false;
 
@@ -50,24 +50,23 @@ async function AnonymousRequest(url, config = {}) {
 			if (typeof output === 'object') {
 				if (config.log) {
 					const date = new Date();
-					const color = '\x1b[32m%s\x1b[0m';
 					const time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ":" + date.getMilliseconds();
-					console.warn(color, `[${time}] Attempt request to "${url}" number ${attempt + 1}/${config.attempts} succeed!`);
+					console.warn(`[${time}] Attempt request to "${url}" number ${attempt + 1}/${config.attempts} succeed!`);
 				}
 				break;
 			}
 
 		} catch (error) {
+			if (output.stdin && typeof output.stdin.end === 'function') output.stdin.end();
 			if (config.log) {
 				const date = new Date();
-				const color = `\x1b[${attempt < (config.attempts - 1) ? 33 : 31}m%s\x1b[0m`;
 				const time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ":" + date.getMilliseconds();
-				console.warn(color, `[${time}] Attempt request to "${url}" number ${attempt + 1}/${config.attempts} failed!`);
+				console.warn(`[${time}] Attempt request to "${url}" number ${attempt + 1}/${config.attempts} failed!`);
 			}
 		}
 	}
 
-	if (typeof output !== 'object') throw new Error('Could not get an response from the server');
+	if (typeof output !== 'object') throw new Error('Couldn\'t get a response from the server');
 
 	// Remove spaces from error and response
 	const error = output.stderr.trim();
