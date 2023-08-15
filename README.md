@@ -9,7 +9,7 @@ Each request passes through different Tor routers, and takes about 3 seconds.
 
 Installation from the Github repository:
 ```
-npm install Kirlovon/Anonymous-Request --save
+npm install Kirlovon/anonymous-request --save
 ```
 
 ## Example
